@@ -9,6 +9,25 @@
 
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 33.33%;
+    padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+</style>
 </head>
 
 <body style="padding: 10px">
@@ -16,6 +35,70 @@
     <h2>Derek Hancock and Niko Escanilla</h2>
 
     <hr>
+    <div>
+    	<h3>Motivation</h3>
+    	<p>To better enhance driving experience and prevent road accidents, the push for autonomous vehicles is only growing. An example of such a push is the Advanced Driver Assitance System. These are a set of technologies currently implemented in many vehicles and include: adaptive cruise control, GPS/traffic warnings, automated braking, lane keep assist.</p>
+
+    	<p>Lane detection is a key area in this surge for autonomous driving and was the topic we chose to focus on. Specifically, we were curious to see if there was a robust solution for detection in adverse visibility conditions. These are conditions where illumination or inclement weather may impede the driver from clearly seeing the lane and road. For the purpose of this project, we focused on illumination problems (e.g. shadows, sun glare) using solely camera (RGB) information.</p>
+
+    	<p><a href="project_reports/projectProposal.pdf">Project proposal.</a></p>
+
+    	<h3>Approaches</h3>
+    		<h4>Preliminary Approach</h4>
+    		<p>We first researched how lane detection works using RGB images and found commonalities across the different resources. The sequence of steps can be summarized below:</p>
+    		<ul>
+    			<li>Color selection. Given an RGB image as input, the goal of this step is to convert the image into a grayscale image. To do so, one may use an averaging RGB channel. Another example would be to look at a different color space. That is, an HSL (hue, saturation, lightness) or HSV (hue, saturation, value) color space. As alternative representations to RGB, depending on the input image, this may make the lanes in your image appear more obvious. In turn, this will lead to better separation between lanes and roads when converted to grayscale.</li>
+    			<li>Canny edge detection. This is a widely used technique that extracts structural information from images by using their gradient information. Its output is a set of weak, strong, and candidate edges based on set thresholds. </li>
+    			<li>Region of interest (ROI). To further reduce the amount of data to be processed, an ROI is chosen. </li>
+    			<li>Hough transform (HT). HT uses the edge map produced by the Canny edge detector to find lane candidates</li>
+    		</ul>
+
+			<p>Following these steps provided good results on "Highway" data (i.e. images in which the road and lanes are obvious), but proved to be ineffective in finding lanes perturbed by changes in illumination. (PUT PRELIM FIGURES HERE?)</p>
+
+			<p><a href="project_reports/midtermReport_CS766.pdf">Mid-term report.</a></p>
+
+    		<h4>Main Approach</h4>
+    		<p>To combat illumination changes, we followed a paper called "Gradient-Enhancing Conversion for Illumination-Robust Lane Detection." Two key ideas were proposed: gradient-enhancing conversion and adaptive Canny edge detection.</p>
+
+    		<p>INSERT PIPELINE FIGURE FROM SLIDES HERE</p>	
+    		<p>Below is a summary of our pipeline:</p>
+    		<ul>
+    			<li><b>Label Training Data</b>. First note that the only possible lane colors in our images are yellow or white. So for training, we hand labeled the first 5 images in our dataset as follows: yellow-lane vs. road and white-lane vs. road. For both scenarios, we defined a road to be any pixel that was not a lane. Labeling was performed by creating image masks for yellow lanes, white lanes, and roads (see images below). </li>
+    			<div class="row">
+  					<div class="column">
+    					<img src="images/img1.jpg" alt="img1" style="width:100%">
+    					<figcaption>Original input image.</figcaption>
+ 					 </div>
+  					<div class="column">
+    					<img src="images/img1_lane_w.jpg" alt="img1_white" style="width:100%">
+    					<figcaption>Mask separating white lane (in white) from road (in black).</figcaption>
+  					</div>
+  					<div class="column">
+    					<img src="images/img1_lane_y.jpg" alt="img1_yellow" style="width:100%">
+    					<figcaption>Mask separating yellow lane (in yellow) from road (in black).</figcaption>
+  					</div>
+				</div>
+    			<li><b> Linear Discriminant Analysis (LDA)</b>. Given our training data, our goal is to find weight vectors (i.e. gradient-enhanced conversion vector) that, respectively, maximize the difference between the classes. In doing so, this step outputs two weight vectors. One that best separates yellow lanes from the road and one that best separates white lanes from the road. </li>
+    			<li><b>Gradient Enhancing Conversion</b>. Given the two weight vectors, we apply each one to the original image. This returns a white-lane gradient enhanced image and a yellow-lane gradient enhanced image. (I DONT HAVE ANY OF THOSE IMAGE BUT MAYBE WE CAN INCLUDE THAT HERE?)</li>
+    			<li><b>Adaptive Canny Edge Detection</b>.</li>
+    			<li><b>Hough Transform</b>.</li>
+    			<li><b>Lane Continuity and Other Filters</b>.</li>
+    			<li><b>Initial Region of Interest</b>.</li>
+    			<li><b>Curve Fit</b>.</li>
+    			<li><b>Lane Detected Image</b>.</li>
+    			<li><b>Update Training Data</b>.</li>
+    		</ul>
+
+    	<h3>Implementation</h3>
+    		<h4>Data</h4>
+    		<p>The data used for our implementation was from Udacity's Open Source Self-Driving Car repository. More details about the data can be found <a href="https://github.com/udacity/self-driving-car/tree/master/datasets/CH2">here</a>.</p>
+
+    	<h3>Results</h3>
+    	<p></p>
+
+    	<h3>Discussion</h3>
+    	<p></p>
+    </div>
 </body>
 
 <!-- Latest compiled and minified JavaScript -->
