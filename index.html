@@ -47,10 +47,10 @@
     		<h4>Preliminary Approach</h4>
     		<p>We first researched how lane detection works using RGB images and found commonalities across the different resources. The sequence of steps can be summarized below:</p>
     		<ul>
-    			<li>Color selection. Given an RGB image as input, the goal of this step is to convert the image into a grayscale image. To do so, one may use an averaging RGB channel. Another example would be to look at a different color space. That is, an HSL (hue, saturation, lightness) or HSV (hue, saturation, value) color space. As alternative representations to RGB, depending on the input image, this may make the lanes in your image appear more obvious. In turn, this will lead to better separation between lanes and roads when converted to grayscale.</li>
-    			<li>Canny edge detection. This is a widely used technique that extracts structural information from images by using their gradient information. Its output is a set of weak, strong, and candidate edges based on set thresholds. </li>
-    			<li>Region of interest (ROI). To further reduce the amount of data to be processed, an ROI is chosen. </li>
-    			<li>Hough transform (HT). HT uses the edge map produced by the Canny edge detector to find lane candidates</li>
+    			<li><b>Color selection</b>. Given an RGB image as input, the goal of this step is to convert the image into a grayscale image. To do so, one may use an averaging RGB channel. Another example would be to look at a different color space. That is, an HSL (hue, saturation, lightness) or HSV (hue, saturation, value) color space. As alternative representations to RGB, depending on the input image, this may make the lanes in your image appear more obvious. In turn, this will lead to better separation between lanes and roads when converted to grayscale.</li>
+    			<li><b>Canny edge detection</b>. This is a widely used technique that extracts structural information from images by using their gradient information. Its output is a set of weak, strong, and candidate edges based on set thresholds. </li>
+    			<li><b>Region of interest (ROI)</b>. To further reduce the amount of data to be processed, an ROI is chosen. </li>
+    			<li><b>Hough transform (HT)</b>. HT uses the edge map produced by the Canny edge detector to find lane candidates</li>
     		</ul>
 
 			<p>Following these steps provided good results on "Highway" data (i.e. images in which the road and lanes are obvious), but proved to be ineffective in finding lanes perturbed by changes in illumination. (PUT PRELIM FIGURES HERE?)</p>
@@ -92,6 +92,8 @@
     	<h3>Implementation</h3>
     		<h4>Data</h4>
     		<p>The data used for our implementation was from Udacity's Open Source Self-Driving Car repository. More details about the data can be found <a href="https://github.com/udacity/self-driving-car/tree/master/datasets/CH2">here</a>.</p>
+    		<h4>Repository</h4>
+    		<p>Our downloadable source and executable code can be found <a href="https://github.com/dereklh4/CS766_lane_tracking">here</a>.</p>
 
     	<h3>Results</h3>
     	<p></p>
