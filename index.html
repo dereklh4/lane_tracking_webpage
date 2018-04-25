@@ -63,7 +63,7 @@
     		<p>INSERT PIPELINE FIGURE FROM SLIDES HERE</p>	
     		<p>Below is a summary of our pipeline:</p>
     		<ul>
-    			<li><b>Label Training Data</b>. First note that the only possible lane colors in our images are yellow or white. So for training, we hand labeled the first 5 images in our dataset as follows: yellow-lane vs. road and white-lane vs. road. For both scenarios, we defined a road to be any pixel that was not a lane. Labeling was performed by creating image masks for yellow lanes, white lanes, and roads (see images below). </li>
+    			<li><b>Label Training Data</b>. First note that the only possible lane colors in our images are yellow or white. So for training, we hand labeled the first 5 images in our dataset as follows: yellow-lane vs. road and white-lane vs. road. For both scenarios, we defined a road to be any pixel that was not a lane (after removing an upper percentage of the image from the training set that is clearly not lane or road). Labeling was performed by creating image masks for yellow lanes, white lanes, and roads (see images below).</li>
     			<div class="row">
   					<div class="column">
     					<img src="images/img1.jpg" alt="img1" style="width:100%">
@@ -79,7 +79,23 @@
   					</div>
 				</div>
     			<li><b> Linear Discriminant Analysis (LDA)</b>. Given our training data, our goal is to find weight vectors (i.e. gradient-enhanced conversion vector) that, respectively, maximize the difference between the classes. In doing so, this step outputs two weight vectors. One that best separates yellow lanes from the road and one that best separates white lanes from the road. </li>
-    			<li><b>Gradient Enhancing Conversion</b>. Given the two weight vectors, we apply each one to the original image. This returns a white-lane gradient enhanced image and a yellow-lane gradient enhanced image. (I DONT HAVE ANY OF THOSE IMAGE BUT MAYBE WE CAN INCLUDE THAT HERE?)</li>
+				<li><b>Gradient Enhancing Conversion</b>. Given the two weight vectors, we apply each one to the original image. This returns a white-lane gradient enhanced image and a yellow-lane gradient enhanced image.</li>
+				<div class="row text-center">
+					<div class="col-sm-2">&nbsp;</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/white_gradient_enhanced.png" style="width:100%">
+							<figcaption>White gradient enhanced grayscale image from rgb weights [.226, .070, .704] for this particular image</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">
+							<figure>
+								<img src="images/yellow_gradient_enhanced.png" style="width:100%">
+								<figcaption>Yellow gradient enhanced grayscale image from rgb weights [.512, .437, .051] for this particular image. Notice how the yellow lane is more visible</figcaption>
+							</figure>
+					</div>
+					<div class="col-sm-2">&nbsp;</div>
+				</div>
     			<li><b>Adaptive Canny Edge Detection</b>.</li>
     			<li><b>Hough Transform</b>.</li>
     			<li><b>Lane Continuity and Other Filters</b>.</li>
