@@ -27,6 +27,10 @@
     clear: both;
     display: table;
 }
+
+li {
+	padding-top:10px;
+}
 </style>
 </head>
 
@@ -58,9 +62,9 @@
 			<p><a href="project_reports/midtermReport_CS766.pdf">Mid-term report.</a></p>
 
     		<h4>Main Approach</h4>
-    		<p>To combat illumination changes, we followed a paper called "Gradient-Enhancing Conversion for Illumination-Robust Lane Detection." Two key ideas were proposed: gradient-enhancing conversion and adaptive Canny edge detection. 
+    		<p>To combat illumination changes, we followed the approach used in "Gradient-Enhancing Conversion for Illumination-Robust Lane Detection" [1]. Two key ideas were proposed: gradient-enhancing conversion and adaptive Canny edge detection. 
 				We also added in lane continunity from "Vision-based lane departure detection system in urban
-				traffic scenes". Additionally, we developed some other custom lane filters in order to improve results.
+				traffic scenes" [2]. Additionally, we developed some other custom lane filters in order to improve results.
 			</p>
 
     		<div class="row text-center">
@@ -108,7 +112,7 @@
 					</div>
 					<div class="col-sm-2">&nbsp;</div>
 				</div>
-				<li><b>Adaptive Canny Edge Detection</b>.TODO: Details of adaptive canny edge here</li>
+				<li><b>Adaptive Canny Edge Detection</b>.TODO: Details of adaptive canny edge here (edge linking/hysterosis, equations for thresholds, etc)</li>
 				<div class="row text-center">
 					<div class="col-sm-4">
 						<figure>
@@ -129,7 +133,7 @@
 						</figure>
 					</div>
 				</div>
-				<li><b>Hough Transform</b>.</li>
+				<li><b>Hough Transform</b>. Once we have the edges in the image, we can perform the hough transform to find possible lane lines in the image. Given that we know the lanes will be on the bottom part of the image, we can exclude the edges occuring in the top part of the image (we exclude the top 40% of the image).</li>
 				<div class="row text-center">
 					<div class="col-sm-2">&nbsp;</div>
 					<div class="col-sm-4">
@@ -146,7 +150,22 @@
 					</div>
 					<div class="col-sm-2">&nbsp;</div>
 				</div>
-				<li><b>Lane Continuity and Other Filters</b>.</li>
+				<li><b>Lane Continuity and Other Filters</b>. Ideally we will have exactly one hough line for each lane. Sometimes when we have multiple hough lines (as we do in this example), we need to filter them down to just 2 predicted hough lines.
+					<ol>
+						<li>Lane Continuity: [2] proposed using lane continuity to avoid predicting traffic markings in urban environments as lanes. The 
+						method works well in the case of illumination variation and shadows as well, since the shadows are like markings on the road that create edges.
+						The idea is simple: a hough lane prediction must pass through a "near" region (a bottom portion of the image) and a "far" region (the upper portion of the image). If it
+						does not, then it is very likely not a lane line and can be removed as a prediction. We defined the near region as the bottom 30% of the image and the far region as the upper 70% of the image.
+						</li>
+
+						<li>Custom Lane Filters: We sometimes need additional lane filters in order reduce the number of hough lines further (in this example shown, lane continuity does not remove any of the lines). We introduce several other filters that effectively reduce the number of hough lines:
+							<ul>
+								<li>Lines with very small slopes (nearly horizontal lines) are unlikely to be lanes, so we can filter those out.</li>
+								<li>We divide the remaining lines into those of positive and negative slope and keep one from each group. Lanes tend to start near the bottom of the image, so we keep the line from each group that starts closer to the bottom of the image.</li>
+							</ul>
+						</li>
+					</ol>
+				</li>
 				<div class="row text-center">
 					<div class="col-sm-4">&nbsp;</div>
 					<div class="col-sm-4">
@@ -157,7 +176,7 @@
 					</div>
 					<div class="col-sm-4">&nbsp;</div>
 				</div>
-				<li><b>Initial Region of Interest</b>.</li>
+				<li><b>Initial Region of Interest</b>. Once we have two hough lines, we create a "region of interest", or mask, for which to extract lane edges. We set a width around the hough lines, and a distance along the hough line, for which to extract edges that are believed to be lane edges.</li>
 				<div class="row text-center">
 						<div class="col-sm-2">&nbsp;</div>
 						<div class="col-sm-4">
@@ -174,7 +193,7 @@
 						</div>
 						<div class="col-sm-2">&nbsp;</div>
 					</div>
-				<li><b>Curve Fit</b>.</li>
+				<li><b>Curve Fit</b>. Now that we have extracted the lane edges, we can fit a curve to these lane edges. This allows the algorithm to more effectively handle cases where the lane starts to curve.</li>
 				<div class="row text-center">
 					<div class="col-sm-2">&nbsp;</div>
 					<div class="col-sm-4">
@@ -191,7 +210,7 @@
 					</div>
 					<div class="col-sm-2">&nbsp;</div>
 				</div>
-				<li><b>Lane Detected Image</b>.</li>
+				<li><b>Lane Detected Image</b>. Now we can declare the two fitted curves as the lane predictions for this image.</li>
 				<div class="row text-center">
 					<div class="col-sm-3">&nbsp;</div>
 					<div class="col-sm-6">
@@ -202,7 +221,7 @@
 					</div>
 					<div class="col-sm-3">&nbsp;</div>
 				</div>				
-				<li><b>Update Training Data</b>.</li>
+				<li><b>Update Training Data</b>. We then update the training data for future iterations of the algorithm. We pop off the training data from 5 frames ago and add in the information from the current frame. Each pixel is a piece of training data, with its R,G, and B intensities, as well as its label (lane or road).</li>
 				<div class="row text-center">
 					<div class="col-sm-2">&nbsp;</div>
 					<div class="col-sm-4">
@@ -231,7 +250,19 @@
     	<p></p>
 
     	<h3>Discussion</h3>
-    	<p></p>
+		<p></p>
+		
+		<h3>References</h3>
+		<p>
+		[1] H. Yoo, U. Yang, and K. Sohn. Gradient-enhancing conversion for illumination-robust
+			lane detection. IEEE Transactions on Intelligent Transportation Systems, 14(3):1083-
+			1094, Sept 2013.
+		</p>
+		<p>
+		[2] Y. C. Leng and C. L. Chen. Vision-based lane departure detection system in urban
+		traffic scenes. In 2010 11th International Conference on Control Automation Robotics
+		Vision, pages 1875{1880, Dec 2010.
+		</p>
     </div>
 </body>
 
