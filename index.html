@@ -58,10 +58,22 @@
 			<p><a href="project_reports/midtermReport_CS766.pdf">Mid-term report.</a></p>
 
     		<h4>Main Approach</h4>
-    		<p>To combat illumination changes, we followed a paper called "Gradient-Enhancing Conversion for Illumination-Robust Lane Detection." Two key ideas were proposed: gradient-enhancing conversion and adaptive Canny edge detection.</p>
+    		<p>To combat illumination changes, we followed a paper called "Gradient-Enhancing Conversion for Illumination-Robust Lane Detection." Two key ideas were proposed: gradient-enhancing conversion and adaptive Canny edge detection. 
+				We also added in lane continunity from "Vision-based lane departure detection system in urban
+				traffic scenes". Additionally, we developed some other custom lane filters in order to improve results.
+			</p>
 
-    		<p>INSERT PIPELINE FIGURE FROM SLIDES HERE</p>	
-    		<p>Below is a summary of our pipeline:</p>
+    		<div class="row text-center">
+				<div class="col-sm-3">&nbsp;</div>
+				<div class="col-sm-6">
+					<figure>
+						<img src="images/pipeline_overview.png" style="width:100%">
+						<figcaption>Pipeline Overview</figcaption>
+					</figure>
+				</div>
+				<div class="col-sm-3">&nbsp;</div>
+			</div>	
+			<p>Below is a summary of our pipeline:</p>
     		<ul>
     			<li><b>Label Training Data</b>. First note that the only possible lane colors in our images are yellow or white. So for training, we hand labeled the first 5 images in our dataset as follows: yellow-lane vs. road and white-lane vs. road. For both scenarios, we defined a road to be any pixel that was not a lane (after removing an upper percentage of the image from the training set that is clearly not lane or road). Labeling was performed by creating image masks for yellow lanes, white lanes, and roads (see images below).</li>
     			<div class="row">
@@ -96,13 +108,117 @@
 					</div>
 					<div class="col-sm-2">&nbsp;</div>
 				</div>
-    			<li><b>Adaptive Canny Edge Detection</b>.</li>
-    			<li><b>Hough Transform</b>.</li>
-    			<li><b>Lane Continuity and Other Filters</b>.</li>
-    			<li><b>Initial Region of Interest</b>.</li>
-    			<li><b>Curve Fit</b>.</li>
-    			<li><b>Lane Detected Image</b>.</li>
-    			<li><b>Update Training Data</b>.</li>
+				<li><b>Adaptive Canny Edge Detection</b>.TODO: Details of adaptive canny edge here</li>
+				<div class="row text-center">
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/canny_white.png" style="width:100%">
+							<figcaption>Canny image for white</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">
+							<figure>
+								<img src="images/canny_yellow.png" style="width:100%">
+								<figcaption>Canny image for yellow</figcaption>
+							</figure>
+					</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/canny_combined.png" style="width:100%">
+							<figcaption>Combined canny image</figcaption>
+						</figure>
+					</div>
+				</div>
+				<li><b>Hough Transform</b>.</li>
+				<div class="row text-center">
+					<div class="col-sm-2">&nbsp;</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/canny_combined_half.png" style="width:100%">
+							<figcaption>Use the lower part of the image for finding the lane lines</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">
+							<figure>
+								<img src="images/hough.png" style="width:100%">
+								<figcaption>The resulting hough lines</figcaption>
+							</figure>
+					</div>
+					<div class="col-sm-2">&nbsp;</div>
+				</div>
+				<li><b>Lane Continuity and Other Filters</b>.</li>
+				<div class="row text-center">
+					<div class="col-sm-4">&nbsp;</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/hough_filtered.png" style="width:100%">
+							<figcaption>Filter down to just two prediction hough lines</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">&nbsp;</div>
+				</div>
+				<li><b>Initial Region of Interest</b>.</li>
+				<div class="row text-center">
+						<div class="col-sm-2">&nbsp;</div>
+						<div class="col-sm-4">
+							<figure>
+								<img src="images/roi1.png" style="width:100%">
+								<figcaption>Region of Interest 1</figcaption>
+							</figure>
+						</div>
+						<div class="col-sm-4">
+								<figure>
+									<img src="images/roi2.png" style="width:100%">
+									<figcaption>Region of Interest 2</figcaption>
+								</figure>
+						</div>
+						<div class="col-sm-2">&nbsp;</div>
+					</div>
+				<li><b>Curve Fit</b>.</li>
+				<div class="row text-center">
+					<div class="col-sm-2">&nbsp;</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/line_fitting1.png" style="width:100%">
+							<figcaption>The edges to fit a line to for lane 1</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/line_fitting2.png" style="width:100%">
+							<figcaption>The edges to fit a line to for lane 2</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-2">&nbsp;</div>
+				</div>
+				<li><b>Lane Detected Image</b>.</li>
+				<div class="row text-center">
+					<div class="col-sm-3">&nbsp;</div>
+					<div class="col-sm-6">
+						<figure>
+							<img src="images/lane_predictions.png" style="width:100%">
+							<figcaption>The final predicted lanes</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-3">&nbsp;</div>
+				</div>				
+				<li><b>Update Training Data</b>.</li>
+				<div class="row text-center">
+					<div class="col-sm-2">&nbsp;</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/label1.png" style="width:100%">
+							<figcaption>Labels for lane 1</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-4">
+						<figure>
+							<img src="images/label2.png" style="width:100%">
+							<figcaption>Labels for lane 2</figcaption>
+						</figure>
+					</div>
+					<div class="col-sm-2">&nbsp;</div>
+				</div>
     		</ul>
 
     	<h3>Implementation</h3>
