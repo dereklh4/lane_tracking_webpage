@@ -299,15 +299,36 @@ li {
 
     	<h3>Implementation</h3>
     		<h4>Data</h4>
-    		<p>The data used for our implementation was from Udacity's Open Source Self-Driving Car repository. More details about the data can be found <a href="https://github.com/udacity/self-driving-car/tree/master/datasets/CH2">here</a>.</p>
+    		<p>The data used for our implementation was from Udacity's Open Source Self-Driving Car repository. The dataset we used contained a total of 5648 images and contained various lighting conditions (e.g., daytime, shadows). More details about the data can be found <a href="https://github.com/udacity/self-driving-car/tree/master/datasets/CH2">here</a>.</p>
     		<h4>Repository</h4>
     		<p>Our downloadable source and executable code can be found <a href="https://github.com/dereklh4/CS766_lane_tracking">here</a>.</p>
 
     	<h3>Results</h3>
-    	<p></p>
+    	<p>After running our pipeline on the Udacity dataset, we randomly sampled 500 images to compute accuracy measurements. [1] discussed how they computed "accuracy" by defining a term they referred to as <i>detection rate</i>. That is, they manually counted the number of correct detected lanes, where a correct prediction is when the predicted lane lies on the true lane markings and its curvature is in the same direction. Although this is a sound measurement, we wanted to be comprehensive in our analyses. In turn, we define true positive, false positive, and false negatives as follows:</p>
+
+    	<p>
+    		<li><b>True positive:</b> correctly predicts that the lane (i.e. predicted lane marking lies on true lane marking and curves in the same directions).</li>
+    		<li><b>False positive:</b> incorrectly predicts that there is a lane (e.g. predicts the grass on the side of the road is a lane).</li>
+    		<li><b>False negative:</b> incorrectly predicts that there is no lane when, indeed, there is one.</li>
+    	</p>
+
+    	<p>Note that each frame may contain one or more true lane markings. Therefore, after manually labelling the 500 frames with true positive, false positive, and/or false negative labels, our final accuracy measurements were the following:</p>
+
+    	<p>
+    		<li><b>Precision:</b> 0.8995</li>
+    		<li><b>Recall:</b> 0.8192</li>
+    		<li><b>F1-Score:</b> 0.8575</li>
+    	</p>
+
+    	<p>Here is a video of the results.</p>
+    	<p><iframe width="600" height="480" src="https://www.youtube.com/embed/4Byf-bHOrDs"></iframe></p>
 
     	<h3>Discussion</h3>
-		<p></p>
+		<p>There were several roadblocks we faced with this project. For example, it was, in and of itself, quite difficult to find sequential data for this task. In addition, the data that we ended up using for our implementation was not as HD as we would have liked. In terms of implementation, our pipeline at first outputted many candidate lanes and so we had to apply several of our own filters (e.g. eliminating candidate lanes that are vertical or horizontal) and another paper's proposed method of lane continuity [2]. </p>
+
+		<p>With all that being said, we believe we obtained comparable results to [1], given that their measurement is more open to interpretation (according to [1], their average detection rate was 96.37%.). Looking ahead, it would be interesting to see if our results change dramatically if we were to add temporal information in training. With temporal information, we could perhaps add more weight to more recent previous images. Additionally, this method finds weights based on LDA and so it finds a simple linear combination of our R, G, and B features that best separates the class labels. Perhaps using a recurrent neural network with this temporal information may be more beneficial (albeit we may sacrific in runtime).</p>
+
+		<p>Another future direction would be to test on more adverse visibility conditions. As previously mentioned, it was difficult to find sequential data in the first place. However, we would like to see how well our pipeline works in situations where there is heavy rain or snow. Lastly, in practice, we would ideally combine a slew of information for lane detection. Information such as light detection and ranging, GPS, and vehicle sensor information. </p>
 		
 		<h3>References</h3>
 		<p>
